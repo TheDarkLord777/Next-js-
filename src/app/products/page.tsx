@@ -17,9 +17,9 @@ type Product = {
 }
 
 const products: Product[] = [
-  { id: 1, name: "Premium Headphones", price: 199.99, category: "Electronics", image: "/placeholder.svg?height=200&width=200" },
-  { id: 2, name: "Smartwatch Pro", price: 299.99, category: "Electronics", image: "/placeholder.svg?height=200&width=200" },
-  { id: 3, name: "Wireless Keyboard", price: 79.99, category: "Electronics", image: "/placeholder.svg?height=200&width=200" },
+  { id: 1, name: "Premium Headphones", price: 199.99, category: "Electronics", image: "/head.webp?height=200&width=200" },
+  { id: 2, name: "Smartwatch Pro", price: 299.99, category: "Electronics", image: "/smart.jpg?height=200&width=200" },
+  { id: 3, name: "RGB Keyboard", price: 79.99, category: "Electronics", image: "/i.webp?height=200&width=200" },
   { id: 4, name: "Ergonomic Office Chair", price: 249.99, category: "Furniture", image: "/placeholder.svg?height=200&width=200" },
   { id: 5, name: "LED Desk Lamp", price: 39.99, category: "Lighting", image: "/placeholder.svg?height=200&width=200" },
   { id: 6, name: "Portable Bluetooth Speaker", price: 89.99, category: "Electronics", image: "/placeholder.svg?height=200&width=200" },
