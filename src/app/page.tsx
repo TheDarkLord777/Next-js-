@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 
 const featuredProducts = [
-  { id: 1, name: "Premium Headphones", price: 199.99, image: "/placeholder.svg?height=200&width=200" },
-  { id: 2, name: "Smartwatch Pro", price: 299.99, image: "/placeholder.svg?height=200&width=200" },
-  { id: 3, name: "Wireless Keyboard", price: 79.99, image: "/placeholder.svg?height=200&width=200" },
+  { id: 1, name: "Premium Headphones", price: 199.99, image: "/head.webp?height=200&width=200" },
+  { id: 2, name: "Smartwatch Pro", price: 299.99, image: "/smart.jpg?height=200&width=200" },
+  { id: 3, name: "RGB Keyboard", price: 79.99, image: "/i.webp?height=200&width=200" },
 ]
 
 export default function Home() {
