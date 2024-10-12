@@ -1,19 +1,52 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { useEffect, useState } from 'react';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isMounted, setIsMounted] = useState(false); // To track if the component is mounted
+  const [error, setError] = useState(""); // To manage error messages
+  const [loading, setLoading] = useState(false); // To manage loading state
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    // Here you would typically send a request to your backend to authenticate the user
-    console.log("Login attempt with:", { email, password })
+  useEffect(() => {
+    setIsMounted(true); // Set to true when the component mounts
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true); // Set loading state to true
+    setError(""); // Reset error message
+
+    try {
+      const response = await fetch(`/api/?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Invalid credentials'); // Handle non-200 responses
+      }
+
+      const data = await response.json();
+      console.log("Login successful:", data);
+      // Handle successful login (e.g., redirect or update user state)
+    } catch (err: any) {
+      setError(err.message || 'Something went wrong'); // Set error message
+      console.error("Login error:", err);
+    } finally {
+      setLoading(false); // Reset loading state
+    }
+  };
+
+  if (!isMounted) {
+    return <div>Loading...</div>; // Render a loading state while mounting
   }
 
   return (
@@ -48,12 +81,15 @@ export default function LoginPage() {
                 />
               </div>
             </div>
+            {error && <p className="text-red-500 text-sm">{error}</p>} {/* Display error message */}
+            <CardFooter>
+              <Button className="w-full" type="submit" disabled={loading}>
+                {loading ? 'Logging in...' : 'Login'}
+              </Button>
+            </CardFooter>
           </form>
         </CardContent>
-        <CardFooter>
-          <Button className="w-full" type="submit">Login</Button>
-        </CardFooter>
       </Card>
     </div>
-  )
+  );
 }
