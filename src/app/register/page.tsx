@@ -11,11 +11,37 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    // Here you would typically send a request to your backend to register the user
-    console.log("Registration attempt with:", { name, email, password, confirmPassword })
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Registration failed');
+      }
+
+      const data = await response.json();
+      console.log("Registration successful:", data);
+      // Handle successful registration (e.g., redirect or update user state)
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Something went wrong';
+      setError(errorMessage);
+      console.error("Registration error:", err);
+    }
   }
 
   return (
@@ -70,11 +96,12 @@ export default function RegisterPage() {
                 />
               </div>
             </div>
+            {error && <p className="text-red-500 text-sm">{error}</p>}
+            <CardFooter>
+              <Button className="w-full" type="submit">Register</Button>
+            </CardFooter>
           </form>
         </CardContent>
-        <CardFooter>
-          <Button className="w-full" type="submit" onClick={handleSubmit}>Register</Button>
-        </CardFooter>
       </Card>
     </div>
   )

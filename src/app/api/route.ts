@@ -72,7 +72,7 @@ export async function DELETE(request: Request) {
 
     const body = await request.json();
     const { id } = body;  // Assume you're sending an ID to delete a specific document
-    const result = await collection.deleteOne({ _id: new ObjectId(id) });  // Delete document
+    await collection.deleteOne({ _id: new ObjectId(id) });  // Delete document
 
     // Return 204 No Content without a body
     return NextResponse.json({}, { status: 204 });
