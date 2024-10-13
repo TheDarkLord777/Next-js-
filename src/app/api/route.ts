@@ -1,86 +1,49 @@
+// pages/api/login.ts
 import { NextResponse } from 'next/server';
-import clientPromise from '@/lib/db';  
-import { ObjectId } from 'mongodb';
-import bcrypt from 'bcrypt';
+import clientPromise from '@/lib/db'; // Adjust the path to your database connection
 
-// GET: Fetch data from MongoDB
-export async function GET() {
-  try {
-    const client = await clientPromise;
-    const db = client.db('User');  // Replace with your database name
-    const collection = db.collection('myCollection');  // Replace with your collection name
-
-    const data = await collection.find({}).toArray();  // Fetch all documents
-    return NextResponse.json({ message: 'Data fetched successfully', data }, { status: 200 });
-  } catch (error) {
-    return NextResponse.json({ message: 'Error fetching data', error: error.message }, { status: 500 });
-  }
+// Define a type for the CORS response
+interface CorsResponse {
+  status: number;
+  headers: {
+    [key: string]: string; // This allows for any key-value pairs in headers
+  };
 }
 
-export async function POST(request: Request) {
+// CORS middleware
+const runCors = (): Promise<CorsResponse> => {
+  return new Promise((resolve) => {
+    // Allow all origins
+    resolve({
+      status: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*', // Allow all origins
+        'Access-Control-Allow-Methods': 'GET, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
+    });
+  });
+};
+
+export async function GET(request: Request) {
+  const corsResponse = await runCors();
+
+  // Return CORS headers for preflight requests
+  if (request.method === 'OPTIONS') {
+    return NextResponse.json({}, { status: corsResponse.status, headers: corsResponse.headers });
+  }
+
   try {
-    const client = await clientPromise;
-    const db = client.db('User');  // O'zgartiring: o'z ma'lumotlar bazangiz nomini
-    const collection = db.collection('myCollection');  // O'zgartiring: o'z to'plamingiz nomini
+    const client = await clientPromise; // Connect to the database
+    const db = client.db('User'); // Replace with your database name
+    const collection = db.collection('myCollection'); // Replace with your collection name
 
-    const body = await request.json();
-    const { email, password } = body;
+    // Fetch all users from the collection
+    const users = await collection.find({}).toArray(); // You can customize the query as needed
 
-    // Parolni xesh qilish
-    const saltRounds = 10; // Xesh qilish qatlamlar soni
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-    // Yangi foydalanuvchini qo'shish
-    const result = await collection.insertOne({ email, password: hashedPassword });  // Xesh qilingan parol bilan saqlash
-
-    return NextResponse.json({ message: 'User registered successfully', result }, { status: 201 });
+    // Return the fetched user data
+    return NextResponse.json({ message: 'GET request successful', users }, { status: 200, headers: corsResponse.headers });
   } catch (error) {
-    return NextResponse.json(
-      { message: 'Error inserting data', error: error.message },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: 'Error handling GET request', error: error.message }, { status: 500, headers: corsResponse.headers });
   }
 }
-
-// PUT: Update data in MongoDB
-export async function PUT(request: Request) {
-  try {
-    const client = await clientPromise;
-    const db = client.db('User');  // Replace with your database name
-    const collection = db.collection('myCollection');  // Replace with your collection name
-
-    const body = await request.json();
-    const { id, ...updateData } = body;  // Assume you're sending an ID to update a specific document
-    const result = await collection.updateOne({ _id: new ObjectId(id) }, { $set: updateData });  // Update document
-
-    return NextResponse.json({ message: 'Data updated', result }, { status: 200 });
-  } catch (error) {
-    return NextResponse.json(
-      { message: 'Error updating data', error: error.message },
-      { status: 500 }
-    );
-  }
-}
-
-
-// DELETE: Delete data from MongoDB
-export async function DELETE(request: Request) {
-  try {
-    const client = await clientPromise;
-    const db = client.db('User');  // Replace with your database name
-    const collection = db.collection('myCollection');  // Replace with your collection name
-
-    const body = await request.json();
-    const { id } = body;  // Assume you're sending an ID to delete a specific document
-    await collection.deleteOne({ _id: new ObjectId(id) });  // Delete document
-
-    // Return 204 No Content without a body
-    return NextResponse.json({}, { status: 204 });
-  } catch (error) {
-    return NextResponse.json(
-      { message: 'Error deleting data', error: error.message },
-      { status: 500 }
-    );
-  }
-}
-
