@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import clientPromise from '@/lib/db'; // Ensure this points to your db connection
 
-export async function GET(request: Request) {
+export async function GET() {
   try {
     console.log('Connecting to database...');
     const client = await clientPromise; // Connect to the database
