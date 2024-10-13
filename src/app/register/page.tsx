@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
@@ -12,6 +13,12 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [error, setError] = useState("");
+  const [isClient, setIsClient] = useState(false)
+  const router = useRouter()
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,12 +43,16 @@ export default function RegisterPage() {
 
       const data = await response.json();
       console.log("Registration successful:", data);
-      // Handle successful registration (e.g., redirect or update user state)
+      router.push('/login');
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Something went wrong';
       setError(errorMessage);
       console.error("Registration error:", err);
     }
+  }
+
+  if (!isClient) {
+    return null;
   }
 
   return (
@@ -96,10 +107,8 @@ export default function RegisterPage() {
                 />
               </div>
             </div>
-            {error && <p className="text-red-500 text-sm">{error}</p>}
-            <CardFooter>
-              <Button className="w-full" type="submit">Register</Button>
-            </CardFooter>
+            {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+            <Button className="w-full mt-4" type="submit">Register</Button>
           </form>
         </CardContent>
       </Card>
