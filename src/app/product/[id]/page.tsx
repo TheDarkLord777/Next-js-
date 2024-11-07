@@ -42,7 +42,7 @@ const products = [
     name: "Ergonomic Office Chair",
     price: 249.99,
     category: "Furniture",
-    image: "/placeholder.svg?height=400&width=400",
+    image: "/ergomic.jpg?height=400&width=400",
     description:
       "Comfortable office chair with lumbar support and adjustable height.",
   },
@@ -51,7 +51,7 @@ const products = [
     name: "LED Desk Lamp",
     price: 39.99,
     category: "Lighting",
-    image: "/placeholder.svg?height=400&width=400",
+    image: "/ledDesk.jpg?height=400&width=400",
     description:
       "Energy-efficient LED desk lamp with adjustable brightness and color temperature.",
   },
@@ -60,7 +60,7 @@ const products = [
     name: "Portable Bluetooth Speaker",
     price: 89.99,
     category: "Electronics",
-    image: "/placeholder.svg?height=400&width=400",
+    image: "/speaker.jpg?height=400&width=400",
     description:
       "Waterproof Bluetooth speaker with 360-degree sound and 20-hour battery life.",
   },
