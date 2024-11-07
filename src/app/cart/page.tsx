@@ -17,8 +17,8 @@ type CartItem = {
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([
-    { id: 1, name: "Premium Headphones", price: 199.99, quantity: 1, image: "/placeholder.svg?height=100&width=100" },
-    { id: 2, name: "Smartwatch Pro", price: 299.99, quantity: 2, image: "/placeholder.svg?height=100&width=100" },
+    { id: 1, name: "Premium Headphones", price: 199.99, quantity: 1, image: "/head.webp?height=100&width=100" },
+    { id: 2, name: "Smartwatch Pro", price: 299.99, quantity: 2, image: "/smart.jpg?height=100&width=100" },
   ])
 
   const updateQuantity = (id: number, newQuantity: number) => {
