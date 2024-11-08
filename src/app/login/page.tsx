@@ -1,7 +1,8 @@
-"use client";
+// pages/login/page.tsx
+'use client';
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation"; // Import useRouter for navigation
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -21,7 +22,7 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const router = useRouter(); // Initialize useRouter for navigation
+  const router = useRouter();
 
   useEffect(() => {
     setIsMounted(true);
@@ -31,7 +32,7 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     setError("");
-
+  
     try {
       const response = await fetch("/api/login", {
         method: "POST",
@@ -40,7 +41,9 @@ export default function LoginPage() {
         },
         body: JSON.stringify({ email, password }),
       });
-
+  
+      const data = await response.json();
+  
       if (response.status === 404) {
         throw new Error("User not found");
       } else if (response.status === 401) {
@@ -48,11 +51,16 @@ export default function LoginPage() {
       } else if (!response.ok) {
         throw new Error("Login failed");
       }
-
-      const data = await response.json();
+  
       console.log("Login successful:", data);
-      // Redirect to dashboard on successful login
-      router.push("/products"); // Change to your actual dashboard route
+      localStorage.setItem("user", JSON.stringify(data.user)); 
+      // Foydalanuvchi roliga qarab yo'naltirish
+      if (data.user.role === 'admin') {
+        router.push("/admin"); // Admin sahifasiga yo'naltirish
+      } else {
+        router.push("/products"); // Oddiy foydalanuvchi uchun mahsulotlar sahifasiga yo'naltirish
+      }
+  
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Something went wrong";
       setError(errorMessage);
@@ -61,6 +69,7 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+  
 
   if (!isMounted) {
     return <div>Loading...</div>;
@@ -100,8 +109,7 @@ export default function LoginPage() {
                 />
               </div>
             </div>
-            {error && <p className="text-red-500 text-sm">{error}</p>}{" "}
-            {/* Error message styled in red */}
+            {error && <p className="text-red-500 text-sm">{error}</p>}
             <CardFooter>
               <Button className="w-full" type="submit" disabled={loading}>
                 {loading ? "Logging in..." : "Login"}

@@ -1,13 +1,48 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+"use client"; // Ensure this is at the very top of the file
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";  // Ensure useRouter is properly imported
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 export default function AdminDashboardPage() {
+  const [userRole, setUserRole] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter(); // This will be available on the client side
+  
   const recentOrders = [
     { id: 1, customer: "John Doe", total: 299.99, status: "Shipped" },
     { id: 2, customer: "Jane Smith", total: 199.99, status: "Processing" },
     { id: 3, customer: "Bob Johnson", total: 499.99, status: "Delivered" },
-  ]
+  ];
+
+  useEffect(() => {
+    const checkUserRole = async () => {
+      try {
+        const user = JSON.parse(localStorage.getItem("user") || "{}");
+        if (user?.role !== "admin") {
+          await router.push("/not-authorized");
+        } else {
+          setUserRole(user.role);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkUserRole();
+  }, [router]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!userRole) {
+    return <div>Unable to check user role</div>;
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -73,5 +108,5 @@ export default function AdminDashboardPage() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
