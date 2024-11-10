@@ -1,12 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import SpinWheel from "@/components/fortune_wheel/fortune_wheel"  // SpinWheel komponentini import qilish
 
 type Product = {
   id: number;
@@ -28,6 +29,15 @@ const products: Product[] = [
 export default function ProductsPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("All")
+  const [isLoggedIn, setIsLoggedIn] = useState(false) // Login holatini tekshirish
+
+  useEffect(() => {
+    // Foydalanuvchining login holatini tekshirish (masalan, token yoki session orqali)
+    const token = localStorage.getItem("authToken") // Foydalanuvchi tokenini olish
+    if (token) {
+      setIsLoggedIn(true) // Agar token bo'lsa, foydalanuvchi login qilingan
+    }
+  }, [])
 
   const filteredProducts = products.filter(product => 
     product.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
@@ -37,6 +47,10 @@ export default function ProductsPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">Our Products</h1>
+
+      {/* Foydalanuvchi login qilgan bo'lsa, SpinWheelni ko'rsatish */}
+      {isLoggedIn && <SpinWheel isLoggedIn={isLoggedIn} />}
+
       <div className="flex flex-col md:flex-row mb-4 space-y-4 md:space-y-0 md:space-x-4">
         <Input
           type="text"
