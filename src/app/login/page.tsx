@@ -1,4 +1,3 @@
-// pages/login/page.tsx
 'use client';
 
 import { useEffect, useState } from "react";
@@ -8,25 +7,28 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAuth } from "./../context/AuthContext";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isMounted, setIsMounted] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
+  const { login, isLoggedIn } = useAuth();
 
   useEffect(() => {
-    setIsMounted(true);
-  }, []);
+    // Redirect if already logged in
+    if (isLoggedIn) {
+      router.push('/products');
+    }
+  }, [isLoggedIn, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,36 +46,19 @@ export default function LoginPage() {
   
       const data = await response.json();
   
-      if (response.status === 404) {
-        throw new Error("User not found");
-      } else if (response.status === 401) {
-        throw new Error("Invalid password");
-      } else if (!response.ok) {
-        throw new Error("Login failed");
+      if (!response.ok) {
+        throw new Error(data.message || "Login failed");
       }
   
-      console.log("Login successful:", data);
-      localStorage.setItem("user", JSON.stringify(data.user)); 
-      // Foydalanuvchi roliga qarab yo'naltirish
-      if (data.user.role === 'admin') {
-        router.push("/admin"); // Admin sahifasiga yo'naltirish
-      } else {
-        router.push("/products"); // Oddiy foydalanuvchi uchun mahsulotlar sahifasiga yo'naltirish
-      }
+      login(data.user);
+      router.push(data.user.role === 'admin' ? "/admin" : "/products");
   
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Something went wrong";
-      setError(errorMessage);
-      console.error("Login error:", err);
+      setError(err instanceof Error ? err.message : "Login failed");
     } finally {
       setLoading(false);
     }
   };
-  
-
-  if (!isMounted) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div className="container mx-auto px-4 py-8 flex justify-center items-center min-h-[calc(100vh-4rem)]">
@@ -109,12 +94,14 @@ export default function LoginPage() {
                 />
               </div>
             </div>
-            {error && <p className="text-red-500 text-sm">{error}</p>}
-            <CardFooter>
-              <Button className="w-full" type="submit" disabled={loading}>
-                {loading ? "Logging in..." : "Login"}
-              </Button>
-            </CardFooter>
+            {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+            <Button 
+              className="w-full mt-4" 
+              type="submit" 
+              disabled={loading}
+            >
+              {loading ? "Logging in..." : "Login"}
+            </Button>
           </form>
         </CardContent>
       </Card>

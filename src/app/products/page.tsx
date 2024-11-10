@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import SpinWheel from "@/components/fortune_wheel/fortune_wheel";
+import { useAuth } from "./../context/AuthContext";
+
 
 type Product = {
   id: number;
@@ -28,22 +30,13 @@ const products: Product[] = [
 export default function ProductsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [prizeWon, setPrizeWon] = useState<string>("");
+  const { isLoggedIn } = useAuth();
 
-  useEffect(() => {
-    const user = localStorage.getItem("user");
-    if (user) {
-      setIsLoggedIn(true);
-    }
-  }, []);
 
   const handleSpinComplete = () => {
-    // Choose a random product from the products array
     const randomProduct = products[Math.floor(Math.random() * products.length)];
-    setPrizeWon(randomProduct.name); // Set the prize won to the product's name
-
-    // Show a congratulations message with the prize won
+    setPrizeWon(randomProduct.name);
     alert(`Congratulations! You won: ${randomProduct.name}`);
   };
 
@@ -59,7 +52,7 @@ export default function ProductsPage() {
       {isLoggedIn && (
         <SpinWheel
           isLoggedIn={isLoggedIn}
-          onComplete={handleSpinComplete} // Pass the function to onComplete
+          onComplete={handleSpinComplete}
         />
       )}
 

@@ -1,24 +1,20 @@
-'use client';
-
+"use client"
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, User, LogOut } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useAuth } from "./context/AuthContext";
+import { useEffect } from "react";
 
 export default function NavBar() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const router = useRouter();
+  const { isLoggedIn, logout, checkAuthStatus } = useAuth();
+
 
   useEffect(() => {
-    const user = localStorage.getItem("user");
-    setIsLoggedIn(!!user);
-  }, []);
+    checkAuthStatus();
+  }, [checkAuthStatus]);
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    setIsLoggedIn(false);
-    router.push("/");
+    logout();
   };
 
   return (
