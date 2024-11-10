@@ -9,6 +9,9 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "ClickBuy",
   description: "Your one-stop shop for everything",
+  icons: {
+    icon: "/light.png",
+  }
 };
 
 export default function RootLayout({

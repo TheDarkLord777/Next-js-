@@ -29,7 +29,7 @@ export default function ProductsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [prizeWon, setPrizeWon] = useState("");
+  const [prizeWon, setPrizeWon] = useState<string>("");
 
   useEffect(() => {
     const user = localStorage.getItem("user");
@@ -39,9 +39,12 @@ export default function ProductsPage() {
   }, []);
 
   const handleSpinComplete = () => {
-    // Handle spin completion logic here, for example:
-    alert(`Congratulations! You won: ${prizeWon}`);
-    // You can also update the UI or perform any other action.
+    // Choose a random product from the products array
+    const randomProduct = products[Math.floor(Math.random() * products.length)];
+    setPrizeWon(randomProduct.name); // Set the prize won to the product's name
+
+    // Show a congratulations message with the prize won
+    alert(`Congratulations! You won: ${randomProduct.name}`);
   };
 
   const filteredProducts = products.filter(product =>
@@ -56,7 +59,7 @@ export default function ProductsPage() {
       {isLoggedIn && (
         <SpinWheel
           isLoggedIn={isLoggedIn}
-          onComplete={() => handleSpinComplete()} // Pass the function to onComplete
+          onComplete={handleSpinComplete} // Pass the function to onComplete
         />
       )}
 
@@ -106,6 +109,13 @@ export default function ProductsPage() {
           </Card>
         ))}
       </div>
+
+      {prizeWon && (
+        <div className="mt-6 p-4 bg-green-100 text-green-800 border border-green-300 rounded">
+          <h2 className="font-semibold">Congratulations!</h2>
+          <p>You won: <strong>{prizeWon}</strong></p>
+        </div>
+      )}
     </div>
   );
 }
