@@ -8,7 +8,7 @@ import { ShoppingCart, User } from "lucide-react";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "MyShop",
+  title: "ClickBuy",
   description: "Your one-stop shop for everything",
 };
 
@@ -24,7 +24,16 @@ export default function RootLayout({
           <header className="border-b">
             <div className="container mx-auto px-4 py-4 flex justify-between items-center">
               <Link href="/" className="text-2xl font-bold">
-                MyShop
+                <img
+                  src={
+                    typeof window !== "undefined" &&
+                    window.matchMedia("(prefers-color-scheme: dark)").matches
+                      ? "/dark.png"
+                      : "/light.png"
+                  }
+                  alt="Logo"
+                  className="h-16"
+                />
               </Link>
               <nav>
                 <ul className="flex space-x-4 items-center">
@@ -71,7 +80,7 @@ export default function RootLayout({
           <main className="flex-grow">{children}</main>
           <footer className="border-t mt-8">
             <div className="container mx-auto px-4 py-4 text-center text-sm text-muted-foreground">
-              © 2024 MyShop. All rights reserved. Designed by Maxmudbek
+              © 2024 ClickBuy. All rights reserved. Designded by Maxmudbek
             </div>
           </footer>
         </div>

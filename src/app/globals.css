@@ -5,12 +5,20 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --logo-light: url('/light.png');
+  --logo-dark: url('/dark.png');
 }
-
+/* 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --logo: var(--logo-dark);
+  }
+} */
+@media (prefers-color-scheme: light) {
+  :root {
+    --logo: var(--logo-light);
   }
 }
 
