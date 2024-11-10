@@ -1,13 +1,12 @@
-'use client'
-
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import Image from 'next/image'
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import SpinWheel from "@/components/fortune_wheel/fortune_wheel"  // SpinWheel komponentini import qilish
+"use client"
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import SpinWheel from "@/components/fortune_wheel/fortune_wheel";
 
 type Product = {
   id: number;
@@ -24,32 +23,42 @@ const products: Product[] = [
   { id: 4, name: "Ergonomic Office Chair", price: 249.99, category: "Furniture", image: "/ergomic.jpg?height=200&width=200" },
   { id: 5, name: "LED Desk Lamp", price: 39.99, category: "Lighting", image: "/ledDesk.jpg?height=200&width=200" },
   { id: 6, name: "Portable Bluetooth Speaker", price: 89.99, category: "Electronics", image: "/speaker.jpg?height=200&width=200" },
-]
+];
 
 export default function ProductsPage() {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedCategory, setSelectedCategory] = useState("All")
-  const [isLoggedIn, setIsLoggedIn] = useState(false) // Login holatini tekshirish
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [prizeWon, setPrizeWon] = useState("");
 
   useEffect(() => {
-    // Foydalanuvchining login holatini tekshirish (masalan, token yoki session orqali)
-    const token = localStorage.getItem("authToken") // Foydalanuvchi tokenini olish
-    if (token) {
-      setIsLoggedIn(true) // Agar token bo'lsa, foydalanuvchi login qilingan
+    const user = localStorage.getItem("user");
+    if (user) {
+      setIsLoggedIn(true);
     }
-  }, [])
+  }, []);
 
-  const filteredProducts = products.filter(product => 
+  const handleSpinComplete = () => {
+    // Handle spin completion logic here, for example:
+    alert(`Congratulations! You won: ${prizeWon}`);
+    // You can also update the UI or perform any other action.
+  };
+
+  const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
     (selectedCategory === "All" || product.category === selectedCategory)
-  )
+  );
 
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">Our Products</h1>
 
-      {/* Foydalanuvchi login qilgan bo'lsa, SpinWheelni ko'rsatish */}
-      {isLoggedIn && <SpinWheel isLoggedIn={isLoggedIn} />}
+      {isLoggedIn && (
+        <SpinWheel
+          isLoggedIn={isLoggedIn}
+          onComplete={() => handleSpinComplete()} // Pass the function to onComplete
+        />
+      )}
 
       <div className="flex flex-col md:flex-row mb-4 space-y-4 md:space-y-0 md:space-x-4">
         <Input
@@ -71,6 +80,7 @@ export default function ProductsPage() {
           </SelectContent>
         </Select>
       </div>
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {filteredProducts.map((product) => (
           <Card key={product.id}>
@@ -97,5 +107,5 @@ export default function ProductsPage() {
         ))}
       </div>
     </div>
-  )
+  );
 }
